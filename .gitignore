@@ -11,12 +11,9 @@
 #.gitignore
 target
 bin
-titan.properties
 *.output_IS_UNDEFINED
 app.output_IS_UNDEFINED
 *.properties
 deploy
 .idea/
 *.iml
-/dal/nbproject/
-/biz/nbproject/
