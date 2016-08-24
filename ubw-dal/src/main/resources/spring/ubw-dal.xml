@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+						http://www.springframework.org/schema/context
+       					http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+       default-autowire="byName">
+
+    <context:property-placeholder
+        location="classpath:properties/ubw-dal.properties.dev"
+        ignore-unresolvable="true" />
+
+
+    <!-- ======================================================================== -->
+    <!-- DataSource定义 -->
+    <!-- ======================================================================== -->
+    <bean id="ubwDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <!-- 基本属性 url、user、password -->
+        <property name="driverClassName" value="${ubw.database.driver}"/>
+        <property name="url" value="${ubw.database.url}"/>
+        <property name="username" value="${ubw.database.username}"/>
+        <property name="password" value="${ubw.database.password}"/>
+
+        <property name="defaultAutoCommit" value="false"/>
+
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize"
+                  value="${ubw.database.data.source.initial.size}"/>
+        <property name="minIdle" value="1"/>
+        <property name="maxActive"
+                  value="${ubw.database.data.source.max.active}"/>
+
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000"/>
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+
+        <property name="validationQuery" value="SELECT 'x'"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="20"/>
+
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat"/>
+    </bean>
+
+    <!-- ======================================================================== -->
+    <!-- DAO定义 -->
+    <!-- ======================================================================== -->
+    <bean id="ubwSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation"
+                  value="classpath:mybatis/ubw-sqlmap-config.xml"/>
+        <property name="mapperLocations" value="classpath*:mybatis/mapper/*.xml"/>
+        <property name="typeAliasesPackage" value="cc.unlimitedbladeworks.dal.object"/>
+        <property name="dataSource" ref="ubwDataSource"/>
+    </bean>
+
+    <bean name="ubwMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cc.unlimitedbladeworks.dal.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="ubwSqlSessionFactory"/>
+    </bean>
+
+    <!-- other -->
+    <context:annotation-config/>
+    <!-- 定义扫描根路径为cc.unlimitedbladeworks.ubw，不使用默认的扫描方式 -->
+    <context:component-scan base-package="cc.unlimitedbladeworks"
+                            use-default-filters="false">
+        <!-- 扫描符合@Service @Repository的类 -->
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+
+    <!-- ======= 事务定义开始 ======= -->
+
+    <!-- ubw的Ibatis事务管理器 -->
+    <bean id="ubwTransactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ubwDataSource"/>
+    </bean>
+
+    <!-- 事务属性，方法以此开头的需要进行事务控制 -->
+    <bean id="txAttributeSource"
+          class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+        <property name="properties">
+            <props>
+                <prop key="update*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="modify*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="insert*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="save*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="create*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="delete*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="remove*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="move*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="post*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="repost*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="disable*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="reorder*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="recover*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="repost*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="freeze*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="unfreeze*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="add*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="replace*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="register*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="bind*">PROPAGATION_REQUIRED,-RollbackableException</prop>
+                <prop key="newTransactionWrapper">PROPAGATION_REQUIRES_NEW,-RollbackableException
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 事务拦截器 -->
+    <bean id="ubwTxInterceptor"
+          class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="ubwTransactionManager"/>
+        <property name="transactionAttributeSource" ref="txAttributeSource"/>
+    </bean>
+
+    <!-- 为匹配的Bean自动创建代理 -->
+    <bean
+        class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="beanNames">
+            <list>
+                <value>*Service</value>
+            </list>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>ubwTxInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- ======= 事务定义结束 ======= -->
+    
+
+</beans>

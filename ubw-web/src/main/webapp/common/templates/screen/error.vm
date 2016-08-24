@@ -1,0 +1,7 @@
+#set($htmlPageTitle = "500")
+<div class="error_ex">
+    <h1>500</h1>
+
+    <h3>服务器内部错误</h3>
+</div>
+

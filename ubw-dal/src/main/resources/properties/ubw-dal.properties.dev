@@ -1,0 +1,7 @@
+# ubw db conf
+ubw.database.driver=com.mysql.jdbc.Driver
+ubw.database.url=jdbc:mysql://10.157.10.118:3306/test?useUnicode=true&amp;characterEncoding=utf8
+ubw.database.username=test
+ubw.database.password=test
+ubw.database.data.source.max.active=50
+ubw.database.data.source.initial.size=3

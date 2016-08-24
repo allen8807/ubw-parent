@@ -1,0 +1,16 @@
+$rundata.setLayoutEnabled(false)
+<head>
+    <title>Unlimited Blade Works</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+</head>
+<body>
+<p>
+    $welcome
+</p>
+<li>
+  You are No. $click visitor
+</li>
+<li>
+   Your IP is $ip
+</li>
+</body>

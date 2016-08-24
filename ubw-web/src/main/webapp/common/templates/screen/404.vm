@@ -1,0 +1,6 @@
+#set($htmlPageTitle = "404")
+<div class="error_ex">
+    <h1>404</h1>
+
+    <h3>访问的页面不存在</h3>
+</div>
