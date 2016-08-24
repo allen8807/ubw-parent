@@ -7,9 +7,12 @@
 package cc.unlimitedbladeworks.web.home.module.screen;
 
 import cc.unlimitedbladeworks.biz.admin.AdminManager;
+import cc.unlimitedbladeworks.web.restricted.module.screen.TestError;
 import com.alibaba.citrus.turbine.Context;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -23,14 +26,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @see reference class
  */
 public class Index {
+       private static final Logger logger = LoggerFactory.getLogger(Index.class);
     @Autowired
     AdminManager adminManager;
-   public void execute(HttpServletResponse reponse, Context context,HttpServletRequest request) throws Exception {
-        String str = "Welcome to Unlimited Blade Works!";
+   
+    public void execute(HttpServletResponse reponse, Context context,HttpServletRequest request) throws Exception {
+        
+       String str = "Welcome to Unlimited Blade Works!";
         adminManager.increaseIndexClick();
+        long click = adminManager.getIndexClick();
         context.put("welcome", str);
-        context.put("click", adminManager.getIndexClick());
-        context.put("ip",  getIpAddr(request));
+        context.put("click", click);
+        String ip = getIpAddr(request);
+        context.put("ip",  ip);
+        
+        logger.info("No."+click +"visitor from IP "+ ip);
         
     //    reponse.getWriter().write(str);
     }
