@@ -1,2 +1,1 @@
-# ubw-parent
-Unlimited Blade Works Website
+# Unlimited Blade Works
