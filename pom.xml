@@ -20,8 +20,6 @@
         
         <parent.pom>../pom.xml</parent.pom>
         <projectname>ubw-parent</projectname>
-        <module.metrics.version>1.0.20</module.metrics.version>
-        <module.kafka.version>1.0.10</module.kafka.version>
 
         <java.version>1.7</java.version>
         <webx-version>3.2.2</webx-version>
@@ -37,16 +35,6 @@
     </properties>
        <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>cn.fraudmetrix</groupId>
-                <artifactId>module-metrics</artifactId>
-                <version>${module.metrics.version}</version>
-            </dependency>
-             <dependency>
-                <groupId>cn.fraudmetrix</groupId>
-                <artifactId>module-kafka</artifactId>
-                <version>${module.kafka.version}</version>
-            </dependency>
             <!-- ================================================= -->
             <!-- Webx框架依赖 -->
             <!-- ================================================= -->

@@ -26,5 +26,6 @@ public void execute(HttpServletResponse reponse, Context context) throws Excepti
        // context.put("click", adminManager.getIndexClick());
         
     //    reponse.getWriter().write(str);
+  //  reponse.sendRedirect("http://www.baidu.com");
     }
 }
